@@ -14,6 +14,7 @@ RUN make
 RUN make install
 RUN gem install bundler
 WORKDIR /
+RUN rm -rf ruby-2.6.4.tar.gz ruby-2.6.4
 
 # Install Node
 RUN curl -sL https://rpm.nodesource.com/setup_12.x |  bash -
@@ -26,4 +27,6 @@ WORKDIR sqlite-autoconf-3290000
 RUN ./configure --prefix=/usr
 RUN make
 RUN make install
+WORKDIR /
+RUN rm -rf sqlite-autoconf-3290000.tar.gz sqlite-autoconf-3290000
 WORKDIR /main
