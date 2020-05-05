@@ -3,17 +3,23 @@ FROM centos
 # Install elementary libs
 # RUN yum groups mark convert
 RUN yum groupinstall -y "Development Tools"
-RUN yum install -y which wget zlib-devel openssl-devel bzip2-devel libffi-devel sqlite-devel
+RUN yum install -y cmake swig boost boost-regex libicu boost-system boost-program-options boost-thread zlib
+RUN yum install -y bzip2-devel libffi-devel sqlite-devel zlib-devel openssl-devel boost-devel libicu-devel zlib-devel
+RUN yum install -y which wget zsh vim
 
 # Install Python3
 RUN wget https://www.python.org/ftp/python/3.8.2/Python-3.8.2.tar.xz
 RUN tar -xf Python-3.8.2.tar.xz
 WORKDIR Python-3.8.2
-RUN ./configure
+RUN ./configure --enable-optimizations
 RUN make
 RUN make install
 WORKDIR /
 RUN rm -rf Python-3.8.2.tar.xz Python-3.8.2
+
+## Python tools
+RUN pip3 install black
+RUN pip3 install ipython
 
 # Install NeuralNetworks tools
 ## Install TensorFlow
@@ -40,4 +46,25 @@ RUN python3 -m spacy download xx
 ## Install NLTK 
 RUN pip3 install --user -U nltk
 RUN python3 -m nltk.downloader -d /usr/local/share/nltk_data all
+
+## FreelingNLP
+RUN wget https://github.com/TALP-UPC/FreeLing/releases/download/4.1/FreeLing-4.1.tar.gz
+RUN tar -xf FreeLing-4.1.tar.gz
+WORKDIR FreeLing-4.1/build
+RUN sed "s/3.5/3.8/" <<< $(cat ../APIs/python3/Makefile) > ../APIs/python3/Makefile
+RUN sed "s/\/usr\/include\//\/usr\/local\/include\//" <<< $(cat ../APIs/python3/Makefile) > ../APIs/python3/Makefile
+RUN (echo "set(Python_ADDITIONAL_VERSIONS 3.8)" && cat ../APIs/python3/CMakeLists.txt) > cmp8.tmp && mv cmp8.tmp ../APIs/python3/CMakeLists.txt
+RUN cmake .. -DPYTHON3_API=ON
+RUN make -j 4 install
+WORKDIR /FreeLing-4.1/APIs/python3
+RUN make
+RUN cp _freeling.so /usr/local/lib/_pyfreeling.so
+RUN echo /usr/local/lib/ > /etc/ld.so.conf.d/freeling.conf
+RUN ldconfig
+WORKDIR /
+#RUN rm -rf FreeLing-4.1.tar.gz FreeLing-4.1/
+
+# Additional tools
+## 
+RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
