@@ -1,21 +1,20 @@
 FROM centos
 
 # Install elementary libs
-# RUN yum groups mark convert
 RUN yum groupinstall -y "Development Tools"
 RUN yum install -y cmake swig boost boost-regex libicu boost-system boost-program-options boost-thread zlib
 RUN yum install -y bzip2-devel libffi-devel sqlite-devel zlib-devel openssl-devel boost-devel libicu-devel zlib-devel
 RUN yum install -y which wget zsh vim
 
 # Install Python3
-RUN wget https://www.python.org/ftp/python/3.8.2/Python-3.8.2.tar.xz
-RUN tar -xf Python-3.8.2.tar.xz
-WORKDIR Python-3.8.2
+RUN wget https://www.python.org/ftp/python/3.9.1/Python-3.9.1.tar.xz
+RUN tar -xf Python-3.9.1.tar.xz
+WORKDIR Python-3.9.1
 RUN ./configure --enable-optimizations
 RUN make
 RUN make install
 WORKDIR /
-RUN rm -rf Python-3.8.2.tar.xz Python-3.8.2
+RUN rm -rf Python-3.9.1.tar.xz Python-3.9.1
 
 ## Python tools
 RUN pip3 install black
