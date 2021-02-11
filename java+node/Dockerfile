@@ -2,6 +2,7 @@ FROM fedora
 
 RUN dnf upgrade -y
 RUN dnf install -y wget unzip
+RUN dnf install -y ruby
 
 RUN dnf install -y java-latest-openjdk java-latest-openjdk-devel
 ENV JAVA_HOME=/usr/lib/jvm/java-15-openjdk-15.0.1.9-9.rolling.fc33.x86_64/
