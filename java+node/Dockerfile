@@ -1,18 +1,27 @@
-FROM fedora
+FROM fedora:39
 
-RUN dnf upgrade -y
-RUN dnf install -y wget unzip
-RUN dnf install -y ruby
+RUN dnf update -y
+RUN dnf install -y wget unzip xz
+RUN dnf groupinstall -y "Development Tools"
 
-RUN dnf install -y java-latest-openjdk java-latest-openjdk-devel
-ENV JAVA_HOME=/usr/lib/jvm/java-15-openjdk-15.0.2.0.7-0.rolling.fc33.x86_64/
+# JAVA 17
+RUN wget https://download.java.net/java/GA/jdk17.0.2/dfd4a8d0985749f896bed50d7138ee7f/8/GPL/openjdk-17.0.2_linux-x64_bin.tar.gz \
+  && tar -xvf openjdk-17.0.2_linux-x64_bin.tar.gz \
+  && rm openjdk-17.0.2_linux-x64_bin.tar.gz
+ENV JAVA_HOME=/jdk-17.0.2/
+ENV PATH="$JAVA_HOME/bin:$PATH"
 
-RUN dnf install -y nodejs
+# NODE 18
+RUN wget https://nodejs.org/dist/v18.18.2/node-v18.18.2-linux-x64.tar.xz \
+  && tar -xvf node-v18.18.2-linux-x64.tar.xz \
+  && rm node-v18.18.2-linux-x64.tar.xz
+ENV PATH="/node-v18.18.2-linux-x64:$PATH"
+ENV PATH="/node-v18.18.2-linux-x64/bin/:$PATH"
 
-RUN wget https://services.gradle.org/distributions/gradle-6.8.1-bin.zip
-RUN unzip -d /opt/gradle gradle-6.8.1-bin.zip
+RUN wget https://services.gradle.org/distributions/gradle-6.8.1-bin.zip \
+  && unzip -d /opt/gradle gradle-6.8.1-bin.zip \
+  && rm gradle-6.8.1-bin.zip
 ENV PATH="${PATH}:/opt/gradle/gradle-6.8.1/bin"
-RUN rm gradle-6.8.1-bin.zip
 
 RUN ln -sf /usr/share/zoneinfo/America/Guayaquil /etc/localtime
 
