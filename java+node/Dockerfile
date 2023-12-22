@@ -4,11 +4,11 @@ RUN dnf update -y
 RUN dnf install -y wget unzip xz
 RUN dnf groupinstall -y "Development Tools"
 
-# JAVA 17
-RUN wget https://download.java.net/java/GA/jdk17.0.2/dfd4a8d0985749f896bed50d7138ee7f/8/GPL/openjdk-17.0.2_linux-x64_bin.tar.gz \
-  && tar -xvf openjdk-17.0.2_linux-x64_bin.tar.gz \
-  && rm openjdk-17.0.2_linux-x64_bin.tar.gz
-ENV JAVA_HOME=/jdk-17.0.2/
+# JAVA 15
+RUN wget https://download.java.net/openjdk/jdk15/ri/openjdk-15+36_linux-x64_bin.tar.gz \
+  && tar -xvf openjdk-15+36_linux-x64_bin.tar.gz \
+  && rm openjdk-15+36_linux-x64_bin.tar.gz
+ENV JAVA_HOME=/jdk-15/
 ENV PATH="$JAVA_HOME/bin:$PATH"
 
 # NODE 18
